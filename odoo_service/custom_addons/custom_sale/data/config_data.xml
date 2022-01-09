@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="static_token" model="ir.config_parameter">
+            <field name="key">static_token</field>
+            <field name="value">ABC</field>
+        </record>
+
+        <record id="webhook_token" model="ir.config_parameter">
+            <field name="key">webhook_token</field>
+            <field name="value">Bearer XYZ</field>
+        </record>
+
+        <record id="webhook_url" model="ir.config_parameter">
+            <field name="key">webhook_url</field>
+            <field name="value">http://host.docker.internal:8000/webhook</field>
+        </record>
+
+    </data>
+</odoo>

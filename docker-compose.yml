@@ -1,0 +1,41 @@
+version: '3.1'
+services:
+  db:
+    image: postgres:13
+    container_name: db-service
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - db-data:/var/lib/postgresql/data/pgdata
+
+  odoo:
+    image: odoo:14.0
+    container_name: odoo-service
+    tty: true
+    depends_on:
+      - db
+    ports:
+      - "8071:8069"
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - ./odoo_service/config_odoo:/etc/odoo
+      - ./odoo_service/custom_addons:/mnt/custom_addons
+    command: -d efishery -i custom_sale
+
+  interceptor:
+    container_name: interceptor-service
+    image: interceptor-service:latest
+    tty: true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./interceptor_service/:/app
+  
+volumes:
+  db-data:
+  odoo-data:
