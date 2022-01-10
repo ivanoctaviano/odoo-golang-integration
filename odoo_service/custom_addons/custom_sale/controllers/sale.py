@@ -159,7 +159,7 @@ class SaleOrder(http.Controller):
             if not exist_order:
                 return helper.response(code=400, success=False, data={'name': "order id not found"})
 
-            exist_order_reference = sale_obj.search([('id','!=',order_id)('origin','=',body.get('name'))])
+            exist_order_reference = sale_obj.search([('id','!=',order_id),('origin','=',body.get('name'))])
             if exist_order_reference:
                 return helper.response(code=409, success=False, data={'name': "Already exists"})
 

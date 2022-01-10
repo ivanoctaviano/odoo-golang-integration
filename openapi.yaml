@@ -1,0 +1,284 @@
+info:
+  title: "eFishery Service ERP Integration"
+  description: >
+    Kontrak API untuk integrasi Odoo dengan Internal System
+  version: "1.0.0"
+openapi: 3.0.0
+servers:
+  - url: http://localhost:8000
+    description: Local Server
+tags:
+  - name: Sale Order
+    description: Sale order API contract
+components:
+  parameters:
+    authorization:
+      name: Authorization
+      description: Bearer <token>
+      example: 'Bearer ABC'
+      in: header
+      required: true
+      schema:
+        type: string
+    order_id:
+      name: order_id
+      description: Id Order
+      example: 7
+      in: path
+      required: true
+      schema:
+        type: integer
+  schemas:
+    order:
+      type: object
+      properties:
+        name:
+          type: string
+        partner_id:
+          type: integer
+        date_order:
+          type: string
+        company_id:
+          type: integer
+        order_line:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: integer
+              name:
+                type: string
+              product_uom_qty:
+                type: integer
+              product_uom:
+                type: integer
+              price_unit:
+                type: integer
+  requestBodies:
+    order:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/order"
+          example:
+            name: "ORDER-1"
+            partner_id: 11
+            date_order: '2022-10-06 17:20:00'
+            company_id: 1
+            order_line:
+            - product_id: 31
+              product_uom_qty: 1
+              product_uom: 1
+              price_unit: 40000
+paths:
+  /order:
+    post:
+      summary: Create quoatation order
+      description: >
+        Membuat quotation order baru
+      parameters:
+        - $ref: "#/components/parameters/authorization"
+      requestBody:
+        $ref: "#/components/requestBodies/order"
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: true
+                    message: "Success"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: false
+                    message: "Token Not Found"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: false
+                    data:
+                      name: Required
+                      partner_id: Not found
+                      date_order: Invalid format date
+                      company_id: Required
+                      order_line: Is not array
+                      order_line.0.product_id: Is not integer
+                      order_line.0.product_uom_qty: Is not integer
+                      order_line.0.product_uom: Is not integer
+                      order_line.0.price_unit: Is not integer
+        "409":
+          description: "Conflict"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: false
+                    data:
+                      name: Already exists
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: false
+                    message: "Internal Server Error"
+      tags:
+      - Sale Order
+  /order/{order_id}:
+    get:
+      summary: Get quotation order
+      description: >
+        Get quotation order yang sudah ada
+      parameters:
+        - $ref: "#/components/parameters/authorization"
+        - $ref: "#/components/parameters/order_id"
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: true
+                    message: "Data found"
+                    data:
+                      name: "ASD-852/FDR/01/15"
+                      partner_id: 85555
+                      date_order: '2021-06-10 06:47:27'
+                      company_id: 1
+                      relationship:
+                        partner:
+                          - partner_id: 85555
+                            name: "John"
+                            address: "the address"
+                        product:
+                          - id: 8626
+                            name: 'Product'
+                            description: 'The Product'
+                            price: 23324
+                        company:
+                          - id: 1
+                            name: 'Company'
+                            description: 'The company'
+                        uom:
+                          - id: 24
+                            name: 'Kg'
+                            description: 'Satuan berat'
+                        order_line:
+                        - price_unit: 40000
+                          product_id: 8626
+                          product_uom_qty: 1
+                          product_uom: 24
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: false
+                    message: "Token Not Found"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: false
+                    message: "order id not found"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: false
+                    message: "Internal Server Error"
+      tags:
+      - Sale Order
+    put:
+      summary: Update quotation order
+      description: >
+        Update quotation order yang sudah ada
+      parameters:
+        - $ref: "#/components/parameters/authorization"
+        - $ref: "#/components/parameters/order_id"
+      requestBody:
+        $ref: "#/components/requestBodies/order"
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: true
+                    message: "Success"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: false
+                    message: "Token Not Found"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: false
+                    data:
+                      name: Required
+                      partner_id: Not found
+                      date_order: Invalid format date
+                      company_id: Required
+                      order_line: Is not array
+                      order_line.0.sequence: Required
+                      order_line.0.product_id: Is not integer
+                      order_line.0.product_uom_qty: Is not integer
+                      order_line.0.product_uom: Is not integer
+                      order_line.0.price_unit: Is not integer
+        "409":
+          description: "Conflict"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: false
+                    data:
+                      name: Already exists
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success: false
+                    message: "Internal Server Error"
+      tags:
+      - Sale Order
