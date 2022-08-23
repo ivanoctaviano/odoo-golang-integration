@@ -1,0 +1,4 @@
+[submodule "sub_module"]
+	path = sub_module
+	url = git@github.com:ivanoctaviano/web-component.git
+	branch = master
